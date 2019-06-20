@@ -26,7 +26,11 @@ wsl 中是可以运行服务的，但因为引导方式采用的是 scriptinit �
 
 ## wsl gentoo安装指南
 1. 准备 Launch 程序。到 [wsldl官网](https://github.com/yuk7/wsldl/releases) 下载 icons.zip ，解压出里面的 `Gentoo.exe` 文件，放到一个单独的文件夹中。
-2. 准备系统镜像。进入到 ubuntu 系统，下载最新的 stage3 包，用命令转换一下：`xz -d -c stage3-latest.tar.xz | gzip > rootfs.tar.gz` (进入 ubuntu 系统是为了借用其 xz 和 gzip 命令)。将转换后的 rootfs.tar.gz 文件放到 `Gentoo.exe` 的同一文件夹，双击 `Gentoo.exe`，安装完成。
+2. 准备系统镜像。进入到 ubuntu 系统，下载最新的 stage3 包，用命令转换一下：
+```
+xz -d -c stage3-latest.tar.xz | gzip > rootfs.tar.gz
+```
+进入 ubuntu 系统是为了借用其 xz 和 gzip 命令。将转换后的 rootfs.tar.gz 文件放到 `Gentoo.exe` 的同一文件夹，双击 `Gentoo.exe`，安装完成。
 3. 双击 `Gentoo.exe` 进入系统，装 portage、改配置、更新、安装工具软件。要运行系统服务，先 touch /run/openrc/softlevel，在运行 /sbin/openrc，即可正常启动系统服务了，用rc-update add 可以添加自动启动的服务哦。
 4. 配置windows开机启动服务。创建一个 startwsl.vbs 的脚本，将其放入`启动`文件夹中(win-r 中输入 `shell: startup`打开)即可
 ```vbscript
