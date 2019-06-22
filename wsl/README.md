@@ -2,7 +2,7 @@
 wsl 就是windows上的Linux子系统。在wsl之前，有两种方案可以在windows上跑linux：
 1. cygwin，他通过一种方案，将 Linux(严格来说是GUN) 的软件编译成可以在windows下运行的exe文件。
 2. 虚拟机，在虚拟机上安装Linux系统。
-wsl 采用的是 cygwin 的思路；wsl2 则结合了上述两种思路，用了微软。
+wsl 采用的是 cygwin 的思路；wsl2 则结合了上述两种思路，用了微软自己的 Hyper-V 技术，及自己优化的内核。
 
 ## wsl 解决的问题
 1. 直接运行Linux的二进制文件
@@ -37,6 +37,25 @@ xz -d -c stage3-latest.tar.xz | gzip > rootfs.tar.gz
 Set ws = WScript.CreateObject("WScript.Shell")
 ws.run "wsl -d gentoo -u root /etc/init.wsl", vbhide
 ```
+`/etc/init.wsl`：
+```bash
+#/bin/bash
+mkdir /run/openrc
+touch /run/openrc/softlevel
+/sbin/openrc
+```
+
+###  wsl2 tips
+* wsl2 预览版中的网路尚不完善，会导致很多问题，例如[ssh就不能正常使用](https://github.com/microsoft/WSL/issues/4208)。可以用windows系统中的openssh替代。
+
+* [在wsl中使用windows程序](https://docs.microsoft.com/zh-cn/windows/wsl/interop)：
+1. 需要将程序路径加入到 path 中，`ubuntu`、`arch`　可以[自动添加](https://docs.microsoft.com/zh-cn/windows/wsl/wsl-config#set-wsl-launch-settings)，但 `gentoo`、`alpine` 不能，需要手动加载 `.bashrc`、`.zshrc` 中。
+2. .exe 后缀不能省略，要用 `cmd.exe`、`explorer.exe` 这样的方式。
+3. 命令参数的路径问题。根分区要用盘符代替，`/mnt/d/foo/bar` 要写成 `d:/foo/bar`。注意，分隔符还是 `/` ；如果用 `\` 要写两个(`\\`)
+
+* 内核编译。用 gentoo 最好是自己编译内核，没想到在windows还可以享受这样的乐趣，足以证明　`windows10 是最好的 Linux 发行版`。
+1. 下载内核：在 [微软第三方源](https://thirdpartysource.microsoft.com) filter 中输入 wsl，点击download。
+2. [编译内核](https://wiki.gentoo.org/wiki/Handbook:AMD64/Installation/Kernel/zh-cn)，将 `arch/x86/boot/bzImage` 复制出来，再到资源管理器中去替换 `c:\Windows\System32\lxss\tools\kernel`
 
 ## cmd/powershell 调整
 windows 10 中的 cmd/powershell 已经有了长足的进步，窗口大小终于可以改了。可字体和复制粘贴还是那么难用。
